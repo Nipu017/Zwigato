@@ -30,7 +30,7 @@ public class MenuItem {
     private FoodCategory category;
 
     @Column
-    private boolean isVeg;
+    private boolean veg;
 
     @OneToMany(mappedBy = "menuItem")
     @JsonIgnore

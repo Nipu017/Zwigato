@@ -4,6 +4,7 @@ import com.example.zwigato.utility.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 import java.util.List;
@@ -24,16 +25,18 @@ public class OrderEntity {
     private double totalCost;
 
     @Column
-    private Date CreatedAt;
+    @CreationTimestamp
+    private Date createdAt;
 
     @Column
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @OneToMany(mappedBy = "orderEntity")
+    @OneToMany(mappedBy = "orderEntity", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<OrderItem>orderItems;
 }

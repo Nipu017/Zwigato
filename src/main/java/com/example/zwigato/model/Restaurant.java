@@ -30,9 +30,9 @@ public class Restaurant {
     private boolean isOpen;
 
     @Column
-    private Date registerAt;
+    private Date registeredAt;
 
-    @ManyToMany(mappedBy = "restaurants")
+    @ManyToMany(mappedBy = "restaurants", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<MenuItem> menuItem;
 
