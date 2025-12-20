@@ -23,6 +23,9 @@ public class Customer {
     @Column
     private String name;
 
+    @Column
+    private String email;
+
     @Column(nullable = false,length = 10)
     private String mobNo;
 

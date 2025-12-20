@@ -10,6 +10,9 @@ import com.example.zwigato.model.*;
 import com.example.zwigato.model.MenuItem;
 import com.example.zwigato.utility.enums.OrderStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +26,9 @@ public class OrderEntityService {
     private final OrderEntityRepository orderEntityRepository;
     private final CustomerRepository customerRepository;
     private final MenuItemRepository menuItemRepository;
+
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     public OrderResponse placeAnOrder(int customerId, List<OrderItemRequest> orderItemRequests) {
 
@@ -61,10 +67,25 @@ public class OrderEntityService {
 
         OrderEntity savedOrder = orderEntityRepository.save(orderEntity);
 
+//        Send email
+        sendEmail(savedOrder);
+        
         return OrderResponse.builder()
                 .totalCost((int) savedOrder.getTotalCost())
                 .status(savedOrder.getStatus())
                 .createdAt(savedOrder.getCreatedAt())
                 .build();
+    }
+
+    private void sendEmail(OrderEntity savedOrder) {
+
+        String text = "Hi "+savedOrder.getCustomer().getName()+"Your order has been successfully placed with id: "+savedOrder.getId();
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("ironmansunflower@gmail.com");
+        message.setTo(savedOrder.getCustomer().getEmail());
+        message.setSubject("Order Placed");
+        message.setText(text);
+
+        javaMailSender.send(message);
     }
 }
